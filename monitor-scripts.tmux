@@ -31,6 +31,7 @@ do_interpolation() {
   local all_monitor_output=""
   local monitor_string monitor_sep monitor_format
   monitor_sep="$(get_tmux_option "@monitor_scripts_sep" " | ")"
+  [ "$monitor_sep" = "NONE" ] && monitor_sep=""
   monitor_format="$(get_tmux_option "@monitor_scripts_format" "#{monitor_name}: #{monitor_output}")"
   for f in "${script_path}"/*.sh; do
     [ ! -x "$f" ] && continue
@@ -39,7 +40,7 @@ do_interpolation() {
     [ -z "$monitor_name" ] && continue
     monitor_string="$monitor_format"
     monitor_string="${monitor_string/\#\{monitor_name\}/$monitor_name}"
-    monitor_string="${monitor_string/\#\{monitor_output\}/\#($f)}"
+    monitor_string="${monitor_string/\#\{monitor_output\}/#($f)}"
     if [ -z "$all_monitor_output" ]; then
       all_monitor_output="$monitor_string"
     else
